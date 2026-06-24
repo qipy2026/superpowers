@@ -1,12 +1,12 @@
 server:
-  port: 8080
+  port: 6060
   mode: debug
 
 database:
   type: sqlite
   path: crawler.db
   host: 127.0.0.1
-  port: 3306
+  port: 6060
   user: crawler
   password: ${CRAWLER_DB_PASSWORD:-crawler123}
   name: crawler_db

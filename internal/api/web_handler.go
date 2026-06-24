@@ -1,8 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/csv"
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 
@@ -12,11 +14,25 @@ import (
 )
 
 type WebHandler struct {
-	api *Handler
+	api  *Handler
+	tmpl *template.Template
 }
 
-func NewWebHandler(api *Handler) *WebHandler {
-	return &WebHandler{api: api}
+func NewWebHandler(api *Handler, tmpl *template.Template) *WebHandler {
+	return &WebHandler{api: api, tmpl: tmpl}
+}
+
+func (wh *WebHandler) render(c *gin.Context, name string, data gin.H) {
+	var buf bytes.Buffer
+	if err := wh.tmpl.ExecuteTemplate(&buf, name, data); err != nil {
+		c.String(http.StatusInternalServerError, "TEMPLATE ERROR: "+err.Error())
+		return
+	}
+	if buf.Len() == 0 {
+		c.String(http.StatusInternalServerError, fmt.Sprintf("EMPTY RENDER: template=%s found=%v", name, wh.tmpl.Lookup(name) != nil))
+		return
+	}
+	c.Data(http.StatusOK, "text/html; charset=utf-8", buf.Bytes())
 }
 
 func (wh *WebHandler) Overview(c *gin.Context) {
@@ -67,7 +83,7 @@ func (wh *WebHandler) Overview(c *gin.Context) {
 		allAdapters = append(allAdapters, card.AdapterMeta)
 	}
 
-	c.HTML(http.StatusOK, "overview.html", gin.H{
+	wh.render(c, "overview.html", gin.H{
 		"Adapters": allAdapters,
 		"Total":    total,
 		"Online":   online,
@@ -112,7 +128,7 @@ func (wh *WebHandler) Detail(c *gin.Context) {
 		allAdapters = append(allAdapters, m)
 	}
 
-	c.HTML(http.StatusOK, "detail.html", gin.H{
+	wh.render(c, "detail.html", gin.H{
 		"Adapters":  allAdapters,
 		"Name":      name,
 		"Label":     label,

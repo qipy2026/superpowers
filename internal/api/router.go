@@ -1,8 +1,12 @@
 package api
 
-import "github.com/gin-gonic/gin"
+import (
+	"html/template"
 
-func RegisterRoutes(r *gin.Engine, h *Handler) {
+	"github.com/gin-gonic/gin"
+)
+
+func RegisterRoutes(r *gin.Engine, h *Handler, tmpl *template.Template) {
 	v1 := r.Group("/api/v1")
 	{
 		v1.GET("/adapters", h.ListAdapters)
@@ -12,7 +16,7 @@ func RegisterRoutes(r *gin.Engine, h *Handler) {
 		v1.GET("/stats", h.GetStats)
 	}
 
-	wh := NewWebHandler(h)
+	wh := NewWebHandler(h, tmpl)
 	r.GET("/", wh.Overview)
 	r.GET("/detail/:adapter", wh.Detail)
 	r.GET("/export/:adapter", wh.ExportCSV)

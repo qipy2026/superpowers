@@ -225,13 +225,12 @@ func main() {
         gin.SetMode(gin.ReleaseMode)
     }
     router := gin.Default()
-    router.SetHTMLTemplate(tmpl)
 
     staticSubFS, _ := fs.Sub(webFS, "web/static")
     router.StaticFS("/static", http.FS(staticSubFS))
 
     handler := api.NewHandler(eng, repo, sched, reg, logger)
-    api.RegisterRoutes(router, handler)
+    api.RegisterRoutes(router, handler, tmpl)
 
     addr := fmt.Sprintf(":%d", cfg.Server.Port)
     logger.Info("server starting", zap.String("addr", addr))

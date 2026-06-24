@@ -1,44 +1,9 @@
-{{define "overview.html"}}
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>数据爬虫看板</title>
-  <link rel="stylesheet" href="/static/style.css">
-  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
-</head>
-<body>
-  <div class="header">
-    <div class="container">
-      <h1>📊 数据爬虫看板</h1>
-      <nav><a href="/">概览</a></nav>
-    </div>
-  </div>
-  <div class="container">
-    <div class="stats-row">
-      <div class="stat-card green"><div class="num">{{len .Cards}}</div><div class="label">平台总数</div></div>
-      <div class="stat-card blue"><div class="num">{{.Online}}</div><div class="label">有数据平台</div></div>
-      <div class="stat-card amber"><div class="num">{{.Total}}</div><div class="label">数据总量</div></div>
-      <div class="stat-card red"><div class="num">{{.Errors}}</div><div class="label">采集异常</div></div>
-    </div>
-    {{range $cat := categories}}
-      <div class="category-title">{{categoryName $cat}}</div>
-      <div class="platform-grid">
-        {{range $card := $.Cards}}
-          {{if eq $card.Category $cat}}
-            <a href="/detail/{{$card.Name}}" class="platform-card {{$card.CSS}}">
-              <h3>{{$card.Label}}</h3>
-              <div class="meta">
-                {{if $card.Count}}{{$card.Count}} 条{{else}}暂无数据{{end}}
-                {{if $card.Status}} · {{$card.Status}}{{end}}
-              </div>
-            </a>
-          {{end}}
-        {{end}}
-      </div>
-    {{end}}
-  </div>
-</body>
-</html>
-{{end}}
+<head><meta charset="UTF-8"><title>看板</title><link rel="stylesheet" href="/static/style.css"></head>
+<body><div class="container"><h1>📊 数据爬虫看板</h1>
+{{range $cat := categories}}<h2>{{categoryName $cat}}</h2>
+{{range $card := $.Cards}}{{if eq $card.Category $cat}}
+<div class="platform-card {{$card.CSS}}"><h3>{{$card.Label}}</h3><p>{{$card.Count}} 条</p></div>
+{{end}}{{end}}{{end}}
+</div></body></html>

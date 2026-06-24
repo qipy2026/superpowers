@@ -53,6 +53,7 @@ type Handler struct {
 	Reg         Registry
 	Logger      *zap.Logger
 	AdapterMeta map[string]AdapterMeta
+	Tmpl        interface{} // *template.Template, avoid import cycle
 }
 
 type Scheduler interface {
