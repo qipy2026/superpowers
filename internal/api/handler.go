@@ -80,6 +80,11 @@ func NewHandler(
 		adapterMeta: map[string]AdapterMeta{
 			"stats_gov":      {Label: "国家统计局", Category: "government"},
 			"hangye_paihang": {Label: "行业排行榜", Category: "ranking"},
+			"iresearch":              {Label: "艾瑞数据", Category: "market_research"},
+			"guduo":                  {Label: "骨朵数据", Category: "entertainment"},
+			"maoyan":                 {Label: "猫眼票房", Category: "entertainment"},
+			"penguin_intelligence":   {Label: "企鹅智库", Category: "research"},
+			"tencent_research":       {Label: "腾讯研究院", Category: "research"},
 		},
 	}
 }

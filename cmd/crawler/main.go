@@ -6,8 +6,13 @@ import (
 	"time"
 
 	"crawler/internal/adapter"
+	"crawler/internal/adapter/guduo"
 	"crawler/internal/adapter/hangye_paihang"
+	"crawler/internal/adapter/iresearch"
+	"crawler/internal/adapter/maoyan"
+	"crawler/internal/adapter/penguin_intelligence"
 	"crawler/internal/adapter/stats_gov"
+	"crawler/internal/adapter/tencent_research"
 	"crawler/internal/api"
 	"crawler/internal/engine"
 	"crawler/internal/repository"
@@ -24,6 +29,7 @@ type AdapterCfg struct {
 	Cron      string `mapstructure:"cron"`
 	RateLimit int    `mapstructure:"rate_limit"`
 	Mode      string `mapstructure:"mode"`
+	BaseURL   string `mapstructure:"base_url"`
 }
 
 type Config struct {
@@ -81,12 +87,26 @@ func main() {
 		logger.Fatal("failed to auto migrate", zap.Error(err))
 	}
 
+	// --- Rod Pool ---
+	rodPool := engine.NewRodPool(2)
+	if err := rodPool.Start(); err != nil {
+		logger.Warn("Rod browser pool not available, JS adapters will fail", zap.Error(err))
+	} else {
+		defer rodPool.Close()
+		logger.Info("Rod browser pool started")
+	}
+
 	// --- Adapter Registry ---
 	reg := adapter.NewRegistry()
 	statsGov := stats_gov.New("https://www.stats.gov.cn/sj/")
 	hangye := hangye_paihang.New("https://www.example.com/industry-ranking")
 	reg.Register(statsGov)
 	reg.Register(hangye)
+	reg.Register(iresearch.New(getBaseURL(cfg.Adapters, "iresearch"), rodPool))
+	reg.Register(guduo.New(getBaseURL(cfg.Adapters, "guduo"), rodPool))
+	reg.Register(maoyan.New(getBaseURL(cfg.Adapters, "maoyan"), rodPool))
+	reg.Register(penguin_intelligence.New(getBaseURL(cfg.Adapters, "penguin_intelligence")))
+	reg.Register(tencent_research.New(getBaseURL(cfg.Adapters, "tencent_research")))
 
 	// --- Engine ---
 	limiter := engine.NewMultiLimiter(cfg.Engine.GlobalRateLimit)
@@ -135,4 +155,13 @@ func parseDuration(s, defaultVal string) time.Duration {
 		d, _ = time.ParseDuration(defaultVal)
 	}
 	return d
+}
+
+func getBaseURL(adapters []AdapterCfg, name string) string {
+	for _, a := range adapters {
+		if a.Name == name && a.BaseURL != "" {
+			return a.BaseURL
+		}
+	}
+	return ""
 }
