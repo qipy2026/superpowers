@@ -25,7 +25,7 @@ type DataRow struct {
 	SourceURL   string    `gorm:"size:500;not null" json:"source_url"`
 	DataJSON    string    `gorm:"type:json;not null" json:"data_json"`
 	CollectedAt time.Time `gorm:"not null" json:"collected_at"`
-	Checksum    string    `gorm:"size:32;not null;index" json:"checksum"`
+	Checksum    string    `gorm:"size:32;not null;uniqueIndex" json:"checksum"`
 }
 
 func (DataRow) TableName() string { return "data_rows" }
