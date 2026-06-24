@@ -89,13 +89,25 @@ func main() {
     }
 
     // --- Database ---
-    dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4",
-        cfg.Database.User, cfg.Database.Password, cfg.Database.Host, cfg.Database.Port, cfg.Database.Name)
-    repo, err := repository.New(dsn)
+    var repo *repository.Repository
+    var err error
+    dbType := strings.ToLower(viper.GetString("database.type"))
+    if dbType == "sqlite" {
+        dbPath := viper.GetString("database.path")
+        if dbPath == "" {
+            dbPath = "crawler.db"
+        }
+        logger.Info("using SQLite", zap.String("path", dbPath))
+        repo, err = repository.NewSQLite(dbPath)
+    } else {
+        dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?parseTime=true&charset=utf8mb4",
+            cfg.Database.User, cfg.Database.Password, cfg.Database.Host, cfg.Database.Port, cfg.Database.Name)
+        repo, err = repository.New(dsn)
+    }
     if err != nil {
         logger.Fatal("failed to connect database", zap.Error(err))
     }
-    if err := repo.AutoMigrate(); err != nil {
+    if err = repo.AutoMigrate(); err != nil {
         logger.Fatal("failed to auto migrate", zap.Error(err))
     }
 

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"gorm.io/driver/mysql"
+	"github.com/glebarez/sqlite"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )
@@ -20,6 +21,16 @@ func New(dsn string) (*Repository, error) {
 	if err != nil {
 		return nil, err
 	}
+	return &Repository{db: db}, nil
+}
+
+func NewSQLite(path string) (*Repository, error) {
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+	// SQLite needs WAL mode for concurrent reads
+	db.Exec("PRAGMA journal_mode=WAL")
 	return &Repository{db: db}, nil
 }
 
