@@ -85,6 +85,14 @@ func NewHandler(
 			"maoyan":                 {Label: "猫眼票房", Category: "entertainment"},
 			"penguin_intelligence":   {Label: "企鹅智库", Category: "research"},
 			"tencent_research":       {Label: "腾讯研究院", Category: "research"},
+			"qingbo":                {Label: "清博大数据指数", Category: "social_media"},
+			"xinbang":               {Label: "新榜", Category: "social_media"},
+			"baidu_index":           {Label: "百度指数", Category: "search"},
+			"tao_data":              {Label: "淘数据", Category: "ecommerce"},
+			"shengyi_canmou":        {Label: "生意参谋", Category: "ecommerce"},
+			"douyin_kuaishou":       {Label: "抖音快手网", Category: "short_video"},
+			"huoshaoyun":            {Label: "火烧云", Category: "ecommerce"},
+			"jiujiu_doushang":       {Label: "九九抖商", Category: "short_video"},
 		},
 	}
 }

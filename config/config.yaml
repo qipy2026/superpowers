@@ -58,3 +58,51 @@ adapters:
     rate_limit: 10
     mode: incremental
     base_url: "https://www.tisi.org/"
+  - name: qingbo
+    enabled: true
+    cron: "0 8 * * *"
+    rate_limit: 3
+    mode: incremental
+    base_url: "https://www.gsdata.cn/"
+  - name: xinbang
+    enabled: true
+    cron: "0 8 * * *"
+    rate_limit: 3
+    mode: incremental
+    base_url: "https://www.newrank.cn/"
+  - name: baidu_index
+    enabled: true
+    cron: "0 9 * * *"
+    rate_limit: 2
+    mode: incremental
+    base_url: "https://index.baidu.com/"
+  - name: tao_data
+    enabled: true
+    cron: "0 7 * * *"
+    rate_limit: 2
+    mode: incremental
+    base_url: "https://www.taosj.com/"
+  - name: shengyi_canmou
+    enabled: true
+    cron: "0 8 * * *"
+    rate_limit: 2
+    mode: incremental
+    base_url: "https://sycm.taobao.com/"
+  - name: douyin_kuaishou
+    enabled: true
+    cron: "0 */3 * * *"
+    rate_limit: 2
+    mode: incremental
+    base_url: "https://www.douyinkuai.com/"
+  - name: huoshaoyun
+    enabled: true
+    cron: "0 10 * * *"
+    rate_limit: 3
+    mode: incremental
+    base_url: "https://www.hsye.com/"
+  - name: jiujiu_doushang
+    enabled: true
+    cron: "0 10 * * *"
+    rate_limit: 3
+    mode: incremental
+    base_url: "https://www.99ds.com/"
