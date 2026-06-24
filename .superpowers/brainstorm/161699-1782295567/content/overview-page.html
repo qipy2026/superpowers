@@ -1,0 +1,57 @@
+<h2>概览首页设计</h2>
+<p class="subtitle">首页展示所有平台的状态总览，4 个区域</p>
+
+<div class="mockup">
+  <div class="mockup-header">首页 — 数据概览</div>
+  <div class="mockup-body">
+    <!-- 顶部统计条 -->
+    <div style="display:flex;gap:16px;margin-bottom:16px;flex-wrap:wrap">
+      <div class="placeholder" style="flex:1;min-width:120px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#22c55e">18</div>
+        <div style="font-size:12px;color:#94a3b8">平台总数</div>
+      </div>
+      <div class="placeholder" style="flex:1;min-width:120px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#3b82f6">12</div>
+        <div style="font-size:12px;color:#94a3b8">今日已采集</div>
+      </div>
+      <div class="placeholder" style="flex:1;min-width:120px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#f59e0b">526,300</div>
+        <div style="font-size:12px;color:#94a3b8">数据总量</div>
+      </div>
+      <div class="placeholder" style="flex:1;min-width:120px;text-align:center">
+        <div style="font-size:28px;font-weight:bold;color:#ef4444">3</div>
+        <div style="font-size:12px;color:#94a3b8">采集异常</div>
+      </div>
+    </div>
+
+    <!-- 平台卡片网格 -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:16px">
+      <div class="placeholder" style="border-left:4px solid #22c55e">
+        <strong>🟢 国家统计局</strong><br>
+        <span style="font-size:12px;color:#94a3b8">15,230 条 · 2小时前采集 · 正常</span>
+      </div>
+      <div class="placeholder" style="border-left:4px solid #22c55e">
+        <strong>🟢 艾瑞数据</strong><br>
+        <span style="font-size:12px;color:#94a3b8">3,450 条 · 1小时前采集 · 正常</span>
+      </div>
+      <div class="placeholder" style="border-left:4px solid #f59e0b">
+        <strong>🟡 百度指数</strong><br>
+        <span style="font-size:12px;color:#94a3b8">8,920 条 · 3小时前采集 · 等待登录</span>
+      </div>
+      <div class="placeholder" style="border-left:4px solid #ef4444">
+        <strong>🔴 生意参谋</strong><br>
+        <span style="font-size:12px;color:#94a3b8">0 条 · 采集失败 · 登录过期</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>页面数据流</h3>
+  <div class="placeholder" style="font-family:monospace;font-size:13px;line-height:1.8">
+    GET / → overview.html (Go template)
+    <br>  ├── 顶部 4 个统计卡片 (GET /api/v1/stats)
+    <br>  ├── 平台卡片网格 (GET /api/v1/adapters + 最近任务)
+    <br>  └── hx-get 定时 30s 刷新统计区
+  </div>
+</div>

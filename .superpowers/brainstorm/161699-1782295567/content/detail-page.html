@@ -1,0 +1,72 @@
+<h2>平台详情页</h2>
+<p class="subtitle">点击首页卡片进入，展示单个平台的数据和图表</p>
+
+<div class="mockup">
+  <div class="mockup-header">国家统计局 — 数据详情</div>
+  <div class="mockup-body">
+    <!-- 返回 + 操作栏 -->
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+      <div class="mock-nav">← 返回概览</div>
+      <div style="flex:1"></div>
+      <button class="mock-button">🔄 手动采集</button>
+      <button class="mock-button" style="background:#6366f1;color:#fff">📥 导出 CSV</button>
+    </div>
+
+    <!-- 采集状态 -->
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div class="placeholder" style="flex:1;text-align:center">
+        <div style="font-size:20px;font-weight:bold">15,230</div>
+        <div style="font-size:11px;color:#94a3b8">总条数</div>
+      </div>
+      <div class="placeholder" style="flex:1;text-align:center">
+        <div style="font-size:20px;font-weight:bold;color:#22c55e">成功</div>
+        <div style="font-size:11px;color:#94a3b8">上次采集</div>
+      </div>
+      <div class="placeholder" style="flex:1;text-align:center">
+        <div style="font-size:20px;font-weight:bold">周一 8:00</div>
+        <div style="font-size:11px;color:#94a3b8">定时计划</div>
+      </div>
+    </div>
+
+    <!-- 简易图表区 -->
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <div class="placeholder" style="flex:2;min-height:200px">
+        📊 数据量趋势图（Chart.js 柱状图）
+        <br><span style="font-size:11px;color:#94a3b8">最近 7 天采集量变化</span>
+      </div>
+      <div class="placeholder" style="flex:1;min-height:200px">
+        🥧 数据分布饼图
+        <br><span style="font-size:11px;color:#94a3b8">指标类别占比</span>
+      </div>
+    </div>
+
+    <!-- 数据表 -->
+    <div class="placeholder" style="overflow:auto">
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <thead><tr style="border-bottom:2px solid #e2e8f0">
+          <th style="text-align:left;padding:8px">指标名称</th>
+          <th style="text-align:right;padding:8px">数值</th>
+          <th style="text-align:right;padding:8px">采集时间</th>
+        </tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px">GDP 总量</td><td style="text-align:right">126万亿</td><td style="text-align:right;color:#94a3b8">2024-12-01</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px">年末总人口</td><td style="text-align:right">140,828万</td><td style="text-align:right;color:#94a3b8">2024-12-01</td></tr>
+          <tr style="border-bottom:1px solid #f1f5f9"><td style="padding:8px">CPI 指数</td><td style="text-align:right">100.3</td><td style="text-align:right;color:#94a3b8">2024-11-30</td></tr>
+        </tbody>
+      </table>
+      <div style="text-align:center;padding:12px;color:#94a3b8;font-size:12px">
+        ← 上一页 &nbsp; 第 1/52 页 &nbsp; <a href="#" style="color:#3b82f6">下一页 →</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>交互方式</h3>
+  <div class="placeholder" style="font-family:monospace;font-size:13px;line-height:1.8">
+    图表:  Chart.js (CDN 加载, &lt;canvas&gt; 渲染)
+    <br>表格:  HTMX 分页 (hx-get="/data?adapter=..." hx-target="#table")
+    <br>采集:  hx-post="/api/v1/crawl" hx-target="#status"
+    <br>导出:  直接 GET /api/v1/data?adapter=...&format=csv
+  </div>
+</div>

@@ -11,4 +11,9 @@ func RegisterRoutes(r *gin.Engine, h *Handler) {
 		v1.GET("/data", h.QueryData)
 		v1.GET("/stats", h.GetStats)
 	}
+
+	wh := NewWebHandler(h)
+	r.GET("/", wh.Overview)
+	r.GET("/detail/:adapter", wh.Detail)
+	r.GET("/export/:adapter", wh.ExportCSV)
 }

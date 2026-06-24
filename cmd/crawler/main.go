@@ -1,7 +1,11 @@
 package main
 
 import (
+    "embed"
     "fmt"
+    "html/template"
+    "io/fs"
+    "net/http"
     "strings"
     "time"
 
@@ -33,6 +37,9 @@ import (
     "github.com/spf13/viper"
     "go.uber.org/zap"
 )
+
+//go:embed web/templates/*.html web/static/*
+var webFS embed.FS
 
 type AdapterCfg struct {
     Name      string `mapstructure:"name"`
@@ -196,11 +203,33 @@ func main() {
     }
     sched.Start()
 
+    // --- Templates ---
+    tmpl := template.Must(template.New("").Funcs(template.FuncMap{
+        "categories": func() []string {
+            return []string{"government", "ranking", "market_research", "entertainment",
+                "social_media", "search", "ecommerce", "short_video", "aggregator", "research"}
+        },
+        "categoryName": func(cat string) string {
+            names := map[string]string{
+                "government": "政府统计", "ranking": "行业排行", "market_research": "市场研究",
+                "entertainment": "影视娱乐", "social_media": "社交媒体", "search": "搜索指数",
+                "ecommerce": "电商数据", "short_video": "短视频", "aggregator": "导航聚合", "research": "研究智库",
+            }
+            return names[cat]
+        },
+        "add": func(a, b int) int { return a + b },
+    }).ParseFS(webFS, "web/templates/*.html"))
+
     // --- API ---
     if cfg.Server.Mode == "release" {
         gin.SetMode(gin.ReleaseMode)
     }
     router := gin.Default()
+    router.SetHTMLTemplate(tmpl)
+
+    staticSubFS, _ := fs.Sub(webFS, "web/static")
+    router.StaticFS("/static", http.FS(staticSubFS))
+
     handler := api.NewHandler(eng, repo, sched, reg, logger)
     api.RegisterRoutes(router, handler)
 

@@ -1,0 +1,59 @@
+{{define "detail.html"}}
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{.Label}} - 数据爬虫看板</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <h1>📊 数据爬虫看板</h1>
+      <nav><a href="/">概览</a></nav>
+    </div>
+  </div>
+  <div class="container">
+    <a href="/" class="back-link">← 返回概览</a>
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+      <h2 style="flex:1">{{.Label}}</h2>
+      <button class="btn btn-primary" hx-post="/api/v1/crawl" hx-vals='{"adapters":["{{.Name}}"]}' hx-target="#crawl-status" hx-swap="innerHTML">🔄 手动采集</button>
+      <a href="/export/{{.Name}}" class="btn btn-export">📥 导出 CSV</a>
+      <span id="crawl-status" style="font-size:12px;color:#22c55e"></span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="num">{{.Total}}</div><div class="label">总条数</div></div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-box"><canvas id="trendChart"></canvas></div>
+    </div>
+    <div class="data-table">
+      <table>
+        <thead><tr><th>数据</th><th>来源</th><th>采集时间</th></tr></thead>
+        <tbody>
+          {{range .Rows}}<tr>
+            <td><code style="font-size:11px;background:#f1f5f9;padding:2px 6px;border-radius:3px;max-width:300px;display:inline-block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{.DataJSON}}</code></td>
+            <td style="font-size:11px;color:#94a3b8;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{.SourceURL}}</td>
+            <td style="font-size:12px;color:#94a3b8;white-space:nowrap">{{.CollectedAt.Format "2006-01-02 15:04"}}</td>
+          </tr>{{end}}
+        </tbody>
+      </table>
+      <div class="pagination">
+        <span>第 {{.Page}} 页 / 共 {{.Total}} 条</span>
+        {{if .HasMore}}<a href="/detail/{{.Name}}?page={{add .Page 1}}">下一页 →</a>{{end}}
+      </div>
+    </div>
+  </div>
+  <script>
+  new Chart(document.getElementById('trendChart'), {
+    type: 'bar',
+    data: { labels: ['采集趋势'], datasets: [{ label: '数据量', data: [{{.Total}}], backgroundColor: '#3b82f6' }] },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+  });
+  </script>
+</body>
+</html>
+{{end}}

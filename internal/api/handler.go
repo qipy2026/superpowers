@@ -41,17 +41,18 @@ type TaskBrief struct {
 }
 
 type AdapterMeta struct {
+	Name     string
 	Label    string
 	Category string
 }
 
 type Handler struct {
-	engine      Engine
-	repo        Repository
-	scheduler   Scheduler
-	reg         Registry
-	logger      *zap.Logger
-	adapterMeta map[string]AdapterMeta
+	Engine      Engine
+	Repo        Repository
+	Scheduler   Scheduler
+	Reg         Registry
+	Logger      *zap.Logger
+	AdapterMeta map[string]AdapterMeta
 }
 
 type Scheduler interface {
@@ -72,12 +73,12 @@ func NewHandler(
 	logger *zap.Logger,
 ) *Handler {
 	return &Handler{
-		engine:    engine,
-		repo:      repo,
-		scheduler: scheduler,
-		reg:       reg,
-		logger:    logger,
-		adapterMeta: map[string]AdapterMeta{
+		Engine:    engine,
+		Repo:      repo,
+		Scheduler: scheduler,
+		Reg:       reg,
+		Logger:    logger,
+		AdapterMeta: map[string]AdapterMeta{
 			"stats_gov":      {Label: "国家统计局", Category: "government"},
 			"hangye_paihang": {Label: "行业排行榜", Category: "ranking"},
 			"iresearch":              {Label: "艾瑞数据", Category: "market_research"},
@@ -101,14 +102,14 @@ func NewHandler(
 }
 
 func (h *Handler) ListAdapters(c *gin.Context) {
-	configs, _ := h.repo.ListEnabledConfigs(c.Request.Context())
+	configs, _ := h.Repo.ListEnabledConfigs(c.Request.Context())
 	cfgMap := make(map[string]model.CrawlConfig)
 	for _, cfg := range configs {
 		cfgMap[cfg.Adapter] = cfg
 	}
 	var adapters []AdapterInfo
-	for _, name := range h.reg.List() {
-		meta, ok := h.adapterMeta[name]
+	for _, name := range h.Reg.List() {
+		meta, ok := h.AdapterMeta[name]
 		if !ok {
 			meta = AdapterMeta{Label: name, Category: "other"}
 		}
@@ -138,7 +139,7 @@ func (h *Handler) TriggerCrawl(c *gin.Context) {
 	}
 	var tasks []gin.H
 	for _, name := range req.Adapters {
-		id, err := h.scheduler.Trigger(name)
+		id, err := h.Scheduler.Trigger(name)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
@@ -155,7 +156,7 @@ func (h *Handler) GetTaskStatus(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid task_id"})
 		return
 	}
-	task, err := h.repo.GetTask(c.Request.Context(), id)
+	task, err := h.Repo.GetTask(c.Request.Context(), id)
 	if err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "task not found"})
 		return
@@ -174,7 +175,7 @@ func (h *Handler) QueryData(c *gin.Context) {
 		Page:     page,
 		PageSize: pageSize,
 	}
-	result, err := h.repo.QueryData(c.Request.Context(), params)
+	result, err := h.Repo.QueryData(c.Request.Context(), params)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -183,7 +184,7 @@ func (h *Handler) QueryData(c *gin.Context) {
 }
 
 func (h *Handler) GetStats(c *gin.Context) {
-	counts, err := h.repo.CountByAdapter(c.Request.Context())
+	counts, err := h.Repo.CountByAdapter(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -192,7 +193,7 @@ func (h *Handler) GetStats(c *gin.Context) {
 	for _, c := range counts {
 		total += c
 	}
-	recentTasks, _ := h.repo.ListRecentTasks(c.Request.Context(), 5)
+	recentTasks, _ := h.Repo.ListRecentTasks(c.Request.Context(), 5)
 	c.JSON(http.StatusOK, gin.H{
 		"total_rows":    total,
 		"by_adapter":    counts,
