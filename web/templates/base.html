@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数据爬虫看板</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://unpkg.com/htmx.org@1.9.12"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <div class="header">
+    <div class="container">
+      <h1>数据爬虫看板</h1>
+      <nav>
+        <a href="/">概览</a>
+        {{range .Adapters}}<a href="/detail/{{.Name}}">{{.Label}}</a>{{end}}
+      </nav>
+    </div>
+  </div>
+  <div class="container">
+    {{template "content" .}}
+  </div>
+</body>
+</html>
