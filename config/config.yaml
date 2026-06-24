@@ -1,0 +1,30 @@
+server:
+  port: 8080
+  mode: debug
+
+database:
+  host: 127.0.0.1
+  port: 3306
+  user: crawler
+  password: ${CRAWLER_DB_PASSWORD:-crawler123}
+  name: crawler_db
+  max_open_conns: 25
+
+engine:
+  global_rate_limit: 50
+  retry:
+    max_retries: 3
+    base_delay: 1s
+    max_delay: 30s
+
+adapters:
+  - name: stats_gov
+    enabled: true
+    cron: "0 8 * * 1"
+    rate_limit: 5
+    mode: full
+  - name: hangye_paihang
+    enabled: true
+    cron: "0 9 * * *"
+    rate_limit: 10
+    mode: incremental
