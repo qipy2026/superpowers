@@ -106,3 +106,21 @@ adapters:
     rate_limit: 3
     mode: incremental
     base_url: "https://www.99ds.com/"
+  - name: data_navi
+    enabled: true
+    cron: "0 8 * * *"
+    rate_limit: 10
+    mode: full
+    base_url: "https://hao.199it.com/"
+  - name: haosou
+    enabled: true
+    cron: "0 8 * * *"
+    rate_limit: 10
+    mode: incremental
+    base_url: "https://www.haosou.com/"
+  - name: shudu
+    enabled: true
+    cron: "0 9 * * *"
+    rate_limit: 10
+    mode: incremental
+    base_url: "https://www.shudu.com/"

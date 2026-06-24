@@ -7,9 +7,11 @@ import (
 
     "crawler/internal/adapter"
     "crawler/internal/adapter/baidu_index"
+    "crawler/internal/adapter/data_navi"
     "crawler/internal/adapter/douyin_kuaishou"
     "crawler/internal/adapter/guduo"
     "crawler/internal/adapter/hangye_paihang"
+    "crawler/internal/adapter/haosou"
     "crawler/internal/adapter/huoshaoyun"
     "crawler/internal/adapter/iresearch"
     "crawler/internal/adapter/jiujiu_doushang"
@@ -17,6 +19,7 @@ import (
     "crawler/internal/adapter/penguin_intelligence"
     "crawler/internal/adapter/qingbo"
     "crawler/internal/adapter/shengyi_canmou"
+    "crawler/internal/adapter/shudu"
     "crawler/internal/adapter/stats_gov"
     "crawler/internal/adapter/tao_data"
     "crawler/internal/adapter/tencent_research"
@@ -131,6 +134,10 @@ func main() {
     reg.Register(douyin_kuaishou.New(getBaseURL(cfg.Adapters, "douyin_kuaishou"), rodPool, sessionMgr, antiDetect, proxyPool))
     reg.Register(huoshaoyun.New(getBaseURL(cfg.Adapters, "huoshaoyun"), rodPool, sessionMgr, antiDetect, proxyPool))
     reg.Register(jiujiu_doushang.New(getBaseURL(cfg.Adapters, "jiujiu_doushang"), rodPool, sessionMgr, antiDetect, proxyPool))
+    // Final 3 low-complexity
+    reg.Register(data_navi.New(getBaseURL(cfg.Adapters, "data_navi")))
+    reg.Register(haosou.New(getBaseURL(cfg.Adapters, "haosou")))
+    reg.Register(shudu.New(getBaseURL(cfg.Adapters, "shudu")))
 
     // --- Engine ---
     limiter := engine.NewMultiLimiter(cfg.Engine.GlobalRateLimit)

@@ -93,6 +93,9 @@ func NewHandler(
 			"douyin_kuaishou":       {Label: "抖音快手网", Category: "short_video"},
 			"huoshaoyun":            {Label: "火烧云", Category: "ecommerce"},
 			"jiujiu_doushang":       {Label: "九九抖商", Category: "short_video"},
+			"data_navi":             {Label: "大数据导航", Category: "aggregator"},
+			"haosou":                {Label: "好搜", Category: "search"},
+			"shudu":                 {Label: "数读", Category: "aggregator"},
 		},
 	}
 }
