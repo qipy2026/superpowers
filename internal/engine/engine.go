@@ -20,24 +20,9 @@ type Repository interface {
 	GetLatestCollectedAt(ctx context.Context, adapterName string) (*time.Time, error)
 	ListEnabledConfigs(ctx context.Context) ([]model.CrawlConfig, error)
 	CountByAdapter(ctx context.Context) (map[string]int64, error)
-	QueryData(ctx context.Context, params QueryParams) (*QueryResult, error)
+	QueryData(ctx context.Context, params model.QueryParams) (*model.QueryResult, error)
 	UpsertConfig(ctx context.Context, cfg *model.CrawlConfig) error
 	ListRecentTasks(ctx context.Context, limit int) ([]model.Task, error)
-}
-
-type QueryParams = struct {
-	Adapter  string
-	From     string
-	To       string
-	Keyword  string
-	Page     int
-	PageSize int
-}
-
-type QueryResult struct {
-	Total int64           `json:"total"`
-	Page  int             `json:"page"`
-	Rows  []model.DataRow `json:"rows"`
 }
 
 type Engine struct {

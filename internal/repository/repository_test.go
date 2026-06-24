@@ -119,7 +119,7 @@ func TestQueryData(t *testing.T) {
 	row.SetChecksum()
 	repo.BatchInsertDataRows(ctx, []model.DataRow{row})
 
-	result, err := repo.QueryData(ctx, QueryParams{
+	result, err := repo.QueryData(ctx, model.QueryParams{
 		Adapter:  "stats_gov",
 		Keyword:  "GDP",
 		Page:     1,

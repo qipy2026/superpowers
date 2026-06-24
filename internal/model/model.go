@@ -44,3 +44,18 @@ type CrawlConfig struct {
 }
 
 func (CrawlConfig) TableName() string { return "crawl_configs" }
+
+type QueryParams struct {
+	Adapter  string
+	From     string
+	To       string
+	Keyword  string
+	Page     int
+	PageSize int
+}
+
+type QueryResult struct {
+	Total int64    `json:"total"`
+	Page  int      `json:"page"`
+	Rows  []DataRow `json:"rows"`
+}

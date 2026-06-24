@@ -50,7 +50,7 @@ func (s *stubRepo) ListEnabledConfigs(ctx context.Context) ([]model.CrawlConfig,
 func (s *stubRepo) CountByAdapter(ctx context.Context) (map[string]int64, error) {
 	return nil, nil
 }
-func (s *stubRepo) QueryData(ctx context.Context, p QueryParams) (*QueryResult, error) {
+func (s *stubRepo) QueryData(ctx context.Context, p model.QueryParams) (*model.QueryResult, error) {
 	return nil, nil
 }
 func (s *stubRepo) UpsertConfig(ctx context.Context, c *model.CrawlConfig) error {

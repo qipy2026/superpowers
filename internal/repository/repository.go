@@ -15,21 +15,6 @@ type Repository struct {
 	db *gorm.DB
 }
 
-type QueryParams struct {
-	Adapter  string
-	From     string
-	To       string
-	Keyword  string
-	Page     int
-	PageSize int
-}
-
-type QueryResult struct {
-	Total int64           `json:"total"`
-	Page  int             `json:"page"`
-	Rows  []model.DataRow `json:"rows"`
-}
-
 func New(dsn string) (*Repository, error) {
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -99,7 +84,7 @@ func (r *Repository) GetLatestCollectedAt(ctx context.Context, adapterName strin
 	return &row.CollectedAt, nil
 }
 
-func (r *Repository) QueryData(ctx context.Context, params QueryParams) (*QueryResult, error) {
+func (r *Repository) QueryData(ctx context.Context, params model.QueryParams) (*model.QueryResult, error) {
 	if params.Page <= 0 {
 		params.Page = 1
 	}
@@ -128,7 +113,7 @@ func (r *Repository) QueryData(ctx context.Context, params QueryParams) (*QueryR
 	if err := q.Order("collected_at DESC").Offset(offset).Limit(params.PageSize).Find(&rows).Error; err != nil {
 		return nil, err
 	}
-	return &QueryResult{Total: total, Page: params.Page, Rows: rows}, nil
+	return &model.QueryResult{Total: total, Page: params.Page, Rows: rows}, nil
 }
 
 func (r *Repository) CountByAdapter(ctx context.Context) (map[string]int64, error) {

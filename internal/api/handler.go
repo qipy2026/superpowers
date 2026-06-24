@@ -17,25 +17,10 @@ type Engine interface {
 type Repository interface {
 	GetTask(ctx context.Context, id int64) (*model.Task, error)
 	ListRecentTasks(ctx context.Context, limit int) ([]model.Task, error)
-	QueryData(ctx context.Context, params QueryParams) (*QueryResult, error)
+	QueryData(ctx context.Context, params model.QueryParams) (*model.QueryResult, error)
 	CountByAdapter(ctx context.Context) (map[string]int64, error)
 	ListEnabledConfigs(ctx context.Context) ([]model.CrawlConfig, error)
 	UpsertConfig(ctx context.Context, cfg *model.CrawlConfig) error
-}
-
-type QueryParams = struct {
-	Adapter  string
-	From     string
-	To       string
-	Keyword  string
-	Page     int
-	PageSize int
-}
-
-type QueryResult struct {
-	Total int64           `json:"total"`
-	Page  int             `json:"page"`
-	Rows  []model.DataRow `json:"rows"`
 }
 
 type AdapterInfo struct {
@@ -165,7 +150,7 @@ func (h *Handler) GetTaskStatus(c *gin.Context) {
 func (h *Handler) QueryData(c *gin.Context) {
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "20"))
-	params := QueryParams{
+	params := model.QueryParams{
 		Adapter:  c.Query("adapter"),
 		From:     c.Query("from"),
 		To:       c.Query("to"),
