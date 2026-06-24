@@ -126,3 +126,10 @@ adapters:
     rate_limit: 10
     mode: incremental
     base_url: "https://www.shudu.com/"
+
+captcha:
+  provider: chaojiying
+  chaojiying:
+    user: ${CAPTCHA_USER}
+    password: ${CAPTCHA_PASS}
+    soft_id: "96001"

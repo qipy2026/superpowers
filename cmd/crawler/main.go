@@ -66,6 +66,14 @@ type Config struct {
         ProxyURLs []string `mapstructure:"proxy_urls"`
     } `mapstructure:"engine"`
     Adapters []AdapterCfg `mapstructure:"adapters"`
+    Captcha struct {
+        Provider   string `mapstructure:"provider"`
+        Chaojiying struct {
+            User     string `mapstructure:"user"`
+            Password string `mapstructure:"password"`
+            SoftID   string `mapstructure:"soft_id"`
+        } `mapstructure:"chaojiying"`
+    } `mapstructure:"captcha"`
 }
 
 func main() {
@@ -127,6 +135,17 @@ func main() {
     // Proxy pool
     proxyPool := engine.NewProxyPool(cfg.Engine.ProxyURLs)
 
+    // --- Captcha Solver ---
+    var captchaSolver engine.CaptchaSolver
+    if cfg.Captcha.Provider == "chaojiying" && cfg.Captcha.Chaojiying.User != "" {
+        captchaSolver = engine.NewChaojiyingSolver(
+            cfg.Captcha.Chaojiying.User,
+            cfg.Captcha.Chaojiying.Password,
+            cfg.Captcha.Chaojiying.SoftID,
+        )
+        logger.Info("captcha solver: chaojiying", zap.String("user", cfg.Captcha.Chaojiying.User))
+    }
+
     // --- Adapter Registry ---
     reg := adapter.NewRegistry()
     reg.Register(stats_gov.New("https://www.stats.gov.cn/sj/"))
@@ -140,7 +159,7 @@ func main() {
     // Phase 3
     reg.Register(qingbo.New(getBaseURL(cfg.Adapters, "qingbo"), rodPool, sessionMgr, antiDetect, proxyPool))
     reg.Register(xinbang.New(getBaseURL(cfg.Adapters, "xinbang"), rodPool, sessionMgr, antiDetect, proxyPool))
-    reg.Register(baidu_index.New(getBaseURL(cfg.Adapters, "baidu_index"), rodPool, sessionMgr, antiDetect, proxyPool))
+    reg.Register(baidu_index.New(getBaseURL(cfg.Adapters, "baidu_index"), rodPool, sessionMgr, antiDetect, proxyPool, captchaSolver))
     reg.Register(tao_data.New(getBaseURL(cfg.Adapters, "tao_data"), rodPool, sessionMgr, antiDetect, proxyPool))
     reg.Register(shengyi_canmou.New(getBaseURL(cfg.Adapters, "shengyi_canmou"), rodPool, sessionMgr, antiDetect, proxyPool))
     reg.Register(douyin_kuaishou.New(getBaseURL(cfg.Adapters, "douyin_kuaishou"), rodPool, sessionMgr, antiDetect, proxyPool))
