@@ -1,15 +1,50 @@
 package engine
 
-import "net/url"
+import (
+	"net/url"
+	"sync"
+	"sync/atomic"
+)
 
-type ProxyPool struct{}
+type ProxyPool struct {
+	proxies []*url.URL
+	cursor  atomic.Uint32
+	mu      sync.RWMutex
+}
 
-func NewProxyPool() *ProxyPool { return &ProxyPool{} }
+func NewProxyPool(proxyURLs []string) *ProxyPool {
+	p := &ProxyPool{}
+	for _, raw := range proxyURLs {
+		if u, err := url.Parse(raw); err == nil {
+			p.proxies = append(p.proxies, u)
+		}
+	}
+	return p
+}
 
 func (p *ProxyPool) Next() (*url.URL, error) {
-	return nil, nil // Phase 2: return actual proxy
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	if len(p.proxies) == 0 {
+		return nil, nil
+	}
+	idx := p.cursor.Add(1) % uint32(len(p.proxies))
+	return p.proxies[idx], nil
 }
 
 func (p *ProxyPool) MarkBad(u *url.URL) {
-	// Phase 2: remove from pool
+	p.mu.Lock()
+	defer p.mu.Unlock()
+	for i, proxy := range p.proxies {
+		if proxy.Host == u.Host {
+			p.proxies = append(p.proxies[:i], p.proxies[i+1:]...)
+			return
+		}
+	}
+}
+
+func (p *ProxyPool) Size() int {
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return len(p.proxies)
 }
